@@ -38,6 +38,7 @@ def make_submission(filename, df_inference, target_column, DATA_DIR, train_dict)
 	submission_df = fill_missing_values(submission_df, target_column)
 	save_file(filename, DATA_DIR, submission_df)
 	send_to_kaggle(filename, DATA_DIR)
+	# sometimes kaggle is slow and it's not possible to get score immediately after submitting a file
 	time.sleep(3)
 	submissions = get_submissions_from_kaggle()
 	score = parse_submissions(submissions)

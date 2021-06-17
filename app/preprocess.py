@@ -27,7 +27,7 @@ L_IMPORTANT = ['OverallQual', 'GrLivArea', 'GarageCars', 'GarageArea', 'TotalBsm
        'Condition2_Norm', 'Condition2_PosA', 'Condition2_PosN',
        'Condition2_RRAe']
 
-ENCODER_NAME = 'encoder.joblib'
+ENCODER_NAME = 'encoder_houses.joblib'
 
 def continuous_data_without_na(df):
     data_na = df.dropna()
