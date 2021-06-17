@@ -27,6 +27,8 @@ L_IMPORTANT = ['OverallQual', 'GrLivArea', 'GarageCars', 'GarageArea', 'TotalBsm
        'Condition2_Norm', 'Condition2_PosA', 'Condition2_PosN',
        'Condition2_RRAe']
 
+ENCODER_NAME = 'encoder.joblib'
+
 def continuous_data_without_na(df):
     data_na = df.dropna()
     return data_na
@@ -105,16 +107,17 @@ def prepare_data(df, target_column, ROOT_DIR):
     contin, categor, cols_con, cols_cat = preprocess_data(df, target_column)
     enc = OneHotEncoder(handle_unknown='ignore')
     enc.fit(categor)
-    dump(enc, ROOT_DIR / 'models' / 'encoder.joblib')
+    enc_path = ROOT_DIR / 'models' / ENCODER_NAME
+    dump(enc, enc_path)
     contin_final, categ_final = extract_features(enc, contin, categor)
     
     data = pd.merge(contin_final, categ_final, left_index=True, right_index=True)
     data_final = select_features(data)
-    return enc, data_final, cols_con, cols_cat
+    return enc, enc_path, data_final, cols_con, cols_cat
 
-def prepare_data_inference(df, ROOT_DIR, cols_con, cols_cat):
-    contin, categor, cols_con, cols_cat = preprocess_data(df, '', cols_con, cols_cat)
-    enc = load(ROOT_DIR / 'models' / 'encoder.joblib')
+def prepare_data_inference(df, train_dict):
+    contin, categor, cols_con, cols_cat = preprocess_data(df, '', train_dict['cols_con'], train_dict['cols_cat'])
+    enc = load(train_dict['enc_path'])
     contin_final, categ_final = extract_features(enc, contin, categor)
     
     data = pd.merge(contin_final, categ_final, left_index=True, right_index=True)
